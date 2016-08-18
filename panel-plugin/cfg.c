@@ -429,7 +429,7 @@ places_cfg_open_dialog(PlacesCfg *cfg)
     GtkWidget *frame_search, *vbox_search;
 
     GtkWidget *tmp_box, *tmp_label, *tmp_widget;
-    GtkWidget *adj;
+    GtkAdjustment *adj;
 
     DBG("configure plugin");
 
