@@ -406,7 +406,7 @@ pcfg_make_empty_dialog(PlacesCfg *cfg)
     dlg = xfce_titled_dialog_new_with_buttons(_("Places"),
               NULL,
               GTK_DIALOG_DESTROY_WITH_PARENT,
-              gtk-close, GTK_RESPONSE_ACCEPT, NULL);
+              "gtk-close", GTK_RESPONSE_ACCEPT, NULL);
 
     gtk_window_set_position(GTK_WINDOW(dlg), GTK_WIN_POS_CENTER);
     gtk_window_set_icon_name(GTK_WINDOW(dlg), "xfce4-settings");
