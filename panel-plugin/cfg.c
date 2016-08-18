@@ -440,8 +440,7 @@ places_cfg_open_dialog(PlacesCfg *cfg)
     gtk_widget_show(vbox_button);
 
     frame_button = xfce_gtk_frame_box_new_with_content(_("Button"), vbox_button);
-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame_button, FALSE, FALSE, 0);
-
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dlg))), frame_button, FALSE, FALSE, 0);
 
     /* BUTTON: Show Icon/Label */
     tmp_box = gtk_hbox_new(FALSE, 15);
@@ -486,7 +485,7 @@ places_cfg_open_dialog(PlacesCfg *cfg)
     gtk_widget_show(vbox_menu);
 
     frame_menu = xfce_gtk_frame_box_new_with_content(_("Menu"), vbox_menu);
-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame_menu, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dlg))), frame_menu, FALSE, FALSE, 0);
 
     /* MENU: Show Icons */
     tmp_widget = gtk_check_button_new_with_mnemonic(_("Show _icons in menu"));
@@ -553,7 +552,7 @@ places_cfg_open_dialog(PlacesCfg *cfg)
                      G_OBJECT (vbox_recent), "sensitive");
 
     frame_recent = xfce_gtk_frame_box_new_with_content(_("Recent Documents"), vbox_recent);
-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame_recent, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dlg))), frame_recent, FALSE, FALSE, 0);
 
     /* RECENT DOCUMENTS: Show clear option */
     tmp_widget = gtk_check_button_new_with_mnemonic(_("Show cl_ear option"));
@@ -589,7 +588,7 @@ places_cfg_open_dialog(PlacesCfg *cfg)
     gtk_widget_show(vbox_search);
 
     frame_search = xfce_gtk_frame_box_new_with_content(_("Search"), vbox_search);
-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame_search, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dlg))), frame_search, FALSE, FALSE, 0);
 
     /* Search: command */
     tmp_box = gtk_hbox_new(FALSE, 15);
