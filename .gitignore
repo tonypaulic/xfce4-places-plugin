@@ -33,6 +33,7 @@
 /panel-plugin/places.desktop
 /panel-plugin/xfce4-places-plugin
 /panel-plugin/xfce4-popup-places
+/panel-plugin/*.lo
 
 /po/*.gmo
 /po/Makefile
