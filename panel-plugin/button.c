@@ -453,7 +453,7 @@ static void
 places_button_orientation_changed(XfcePanelPlugin *plugin, GtkOrientation orientation, PlacesButton *self)
 {
     DBG("orientation changed");
-    xfce_hvbox_set_orientation(XFCE_HVBOX(self->box), orientation);
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(self->box), orientation);
     places_button_resize(self);
 }
 
