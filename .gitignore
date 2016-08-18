@@ -41,3 +41,5 @@
 /po/POTFILES
 /po/.intltool-merge-cache
 /po/stamp-it
+
+.browse.VC*
