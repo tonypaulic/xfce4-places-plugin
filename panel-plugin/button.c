@@ -247,7 +247,7 @@ places_button_construct(PlacesButton *self, XfcePanelPlugin *plugin)
     gtk_widget_set_can_default(GTK_WIDGET(&self->parent), FALSE);
     gtk_widget_set_can_focus(GTK_WIDGET(&self->parent), FALSE);
     gtk_button_set_relief(GTK_BUTTON(self), GTK_RELIEF_NONE);
-    gtk_button_set_focus_on_click(GTK_BUTTON(self), FALSE);
+    gtk_widget_set_focus_on_click(GTK_WIDGET(&self->parent), FALSE);
 
     self->alignment = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
     gtk_container_add(GTK_CONTAINER(self), self->alignment);
