@@ -254,7 +254,7 @@ places_button_construct(PlacesButton *self, XfcePanelPlugin *plugin)
     gtk_widget_show(self->alignment);
 
     orientation = xfce_panel_plugin_get_orientation(self->plugin);
-    self->box = xfce_hvbox_new(orientation, FALSE, BOX_SPACING);
+    self->box = gtk_box_new(orientation, BOX_SPACING);
     gtk_container_set_border_width(GTK_CONTAINER(self->box), 0);
     gtk_container_add(GTK_CONTAINER(self->alignment), self->box);
     gtk_widget_show(self->box);
