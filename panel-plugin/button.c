@@ -256,7 +256,8 @@ places_button_construct(PlacesButton *self, XfcePanelPlugin *plugin)
     self->plugin = plugin;
 
     /* from libxfce4panel */
-    GTK_WIDGET_UNSET_FLAGS(self, GTK_CAN_DEFAULT|GTK_CAN_FOCUS);
+    gtk_widget_set_can_default(self, FALSE);
+    gtk_widget_set_can_focus(self, FALSE);
     gtk_button_set_relief(GTK_BUTTON(self), GTK_RELIEF_NONE);
     gtk_button_set_focus_on_click(GTK_BUTTON(self), FALSE);
 
