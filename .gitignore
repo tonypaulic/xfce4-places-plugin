@@ -43,3 +43,6 @@
 /po/stamp-it
 
 .browse.VC*
+compile
+configure.ac
+
