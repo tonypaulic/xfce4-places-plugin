@@ -812,86 +812,78 @@ pview_button_update(PlacesView *view)
 static gboolean
 pview_grab_available (void)
 {
-  GdkScreen     *screen;
-  GdkWindow     *root;
-  GdkGrabStatus  grab_pointer = GDK_GRAB_FROZEN;
-  GdkGrabStatus  grab_keyboard = GDK_GRAB_FROZEN;
-  gboolean       grab_succeed = FALSE;
-  guint          i;
-  GdkEventMask   pointer_mask = GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK
-                                | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK
-                                | GDK_POINTER_MOTION_MASK;
+	bool grab_succeed = false;
 
-  screen = xfce_gdk_screen_get_active (NULL);
-  root = gdk_screen_get_root_window (screen);
+	GdkWindow* root = gdk_screen_get_root_window(xfce_gdk_screen_get_active(NULL));
+	GdkDisplay* display = gdk_display_get_default();
+#if GTK_CHECK_VERSION(3,20,0)
+	GdkSeat* seat = gdk_display_get_default_seat(display);
 
-  /* don't try to get the grab for longer then 1/4 second */
-  for (i = 0; i < (G_USEC_PER_SEC / 100 / 4); i++)
-    {
-      grab_keyboard = gdk_keyboard_grab (root, TRUE, GDK_CURRENT_TIME);
-      if (grab_keyboard == GDK_GRAB_SUCCESS)
-        {
-          grab_pointer = gdk_pointer_grab (root, TRUE, pointer_mask,
-                                           NULL, NULL, GDK_CURRENT_TIME);
-          if (grab_pointer == GDK_GRAB_SUCCESS)
-            {
-              grab_succeed = TRUE;
-              break;
-            }
-        }
+	// Don't try to get the grab for longer then 1/4 second
+	for (guint i = 0; i < (G_USEC_PER_SEC / 400); ++i)
+	{
+		if (gdk_seat_grab(seat, root, GDK_SEAT_CAPABILITY_ALL, true, NULL, NULL, NULL, NULL))
+		{
+			gdk_seat_ungrab(seat);
+			grab_succeed = true;
+			break;
+		}
+		g_usleep(100);
+	}
+#else
+	GdkDeviceManager* device_manager = gdk_display_get_device_manager(display);
+	GdkDevice* pointer = gdk_device_manager_get_client_pointer(device_manager);
+	GdkDevice* keyboard = gdk_device_get_associated_device(pointer);
 
-      g_usleep (100);
-    }
+	// Don't try to get the grab for longer then 1/4 second
+	GdkGrabStatus grab_pointer = GDK_GRAB_FROZEN;
+	GdkGrabStatus grab_keyboard = GDK_GRAB_FROZEN;
+	for (guint i = 0; i < (G_USEC_PER_SEC / 400); ++i)
+	{
+		grab_keyboard = gdk_device_grab(keyboard,
+				root,
+				GDK_OWNERSHIP_NONE,
+				true,
+				GDK_ALL_EVENTS_MASK,
+				NULL,
+				GDK_CURRENT_TIME);
+		if (grab_keyboard == GDK_GRAB_SUCCESS)
+		{
+			grab_pointer = gdk_device_grab(pointer,
+					root,
+					GDK_OWNERSHIP_NONE,
+					true,
+					GDK_ALL_EVENTS_MASK,
+					NULL,
+					GDK_CURRENT_TIME);
+			if (grab_pointer == GDK_GRAB_SUCCESS)
+			{
+				grab_succeed = true;
+				break;
+			}
+		}
+		g_usleep(100);
+	}
 
-  /* release the grab so the gtk_menu_popup() can take it */
-  if (grab_pointer == GDK_GRAB_SUCCESS)
-    gdk_pointer_ungrab (GDK_CURRENT_TIME);
-  if (grab_keyboard == GDK_GRAB_SUCCESS)
-    gdk_keyboard_ungrab (GDK_CURRENT_TIME);
+	// Release the grab so the menu window can take it
+	if (grab_pointer == GDK_GRAB_SUCCESS)
+	{
+		gdk_device_ungrab(pointer, GDK_CURRENT_TIME);
+	}
+	if (grab_keyboard == GDK_GRAB_SUCCESS)
+	{
+		gdk_device_ungrab(keyboard, GDK_CURRENT_TIME);
+	}
+#endif
 
-  if (!grab_succeed)
-    {
-      g_printerr (PACKAGE_NAME ": Unable to get keyboard and mouse "
-                  "grab. Menu popup failed.\n");
-    }
+	if (!grab_succeed)
+	{
+		g_printerr("xfce4-places-plugin: Unable to get keyboard and mouse grab. Menu popup failed.\n");
+	}
 
-  return grab_succeed;
+	return grab_succeed;
 }
 
-
-static gboolean
-pview_remote_event(XfcePanelPlugin *panel_plugin,
-                   const gchar     *name,
-                   const GValue    *value,
-                   PlacesView      *view)
-{
-  g_return_val_if_fail (value == NULL || G_IS_VALUE (value), FALSE);
-
-  DBG("remote event: %s, %x", name, (guint) view);
-
-  if (strcmp (name, "popup") == 0
-      && gtk_widget_get_visible (panel_plugin)
-      && !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (view->button))
-      && pview_grab_available ()) /* checking if there is another menu on the screen */
-    {
-      if (value != NULL
-          && G_VALUE_HOLDS_BOOLEAN (value)
-          && g_value_get_boolean (value))
-        {
-          /* popup the menu under the pointer */
-          pview_open_menu_at (view, NULL);
-        }
-      else
-        {
-          /* show the menu */
-          pview_open_menu(view);
-        }
-      /* don't popup another menu */
-      return TRUE;
-    }
-
-  return FALSE;
-}
 
 /********** Initialization & Finalization **********/
 PlacesView*
